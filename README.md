@@ -6,6 +6,15 @@ found that its one claimed edge was a bug plus market beta.
 
 This is the part that survived — because it tells the truth.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/figures/fig-24y-growth-dark.png">
+  <img alt="Growth of one dollar from 2003 to 2026: the momentum strategy the research platform was built around ends at 3.83 dollars with a Sharpe of 0.34, against 5.77 dollars and a Sharpe of 0.65 for simply holding an equal-weight basket of the same 13 futures markets." src="docs/figures/fig-24y-growth-light.png">
+</picture>
+
+*The strategy the platform was built around, against simply holding the market it traded.
+Reproducible from the derived returns in [`docs/figures/data/`](docs/figures/data/) with
+[`make_figures.py`](docs/figures/make_figures.py). [The full story.](docs/what-the-audit-found.md)*
+
 ```bash
 pip install -e ".[dev]"
 pytest                                     # unit + Hypothesis property tests

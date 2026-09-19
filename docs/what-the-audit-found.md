@@ -76,20 +76,46 @@ Rebuilt on clean, independently sourced data with all sixteen markets: **0.64**.
 ## Finding 3 — and what was left was beta
 
 This was the decisive test, and the one I should have run first. Regress the strategy's
-returns on a naive equal-weight basket of the same markets:
+daily returns on a naive equal-weight basket of the same markets, over the days the
+strategy is actually in the market:
 
-| | Sharpe | ann. vol | max DD |
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/fig-beta-dark.png">
+  <img alt="Scatter of 1,258 daily returns: long-only momentum against the equal-weight basket of the same 16 markets, 2021 to 2026. The fitted line has a beta of 1.02 and lies almost exactly on the one-for-one diagonal. The residual after removing the basket has a Sharpe of 0.42 with t equal to 0.94." src="figures/fig-beta-light.png" width="560">
+</picture>
+
+| same 1,258 days | Sharpe | ann. vol | max DD |
 |---|---|---|---|
-| long-only momentum | 0.76 | 12.5% | 17.4% |
-| **naive equal-weight basket** | **1.07** | **9.6%** | **13.5%** |
+| long-only momentum | 0.89 | 14.0% | 18.5% |
+| naive equal-weight basket | 0.84 | 9.8% | 13.5% |
 
-The long-only book had a beta of 0.86 to the basket and a residual alpha Sharpe of
-**0.08 (t = 0.19)**. There was no alpha. Holding the basket and doing nothing clever beat
-it, at two-thirds of the volatility.
+The long-only book had a **beta of 1.02** to the basket: it moved one-for-one with it.
+What was left after removing that had a Sharpe of 0.42 with **t = 0.94** — a 95%
+interval from −0.50 to +1.33, indistinguishable from zero, and that is before deflating
+for the configurations searched to find it. On Sharpe the two were a tie. The basket got
+there with 30% less volatility, a smaller drawdown, and no model to be wrong.
 
-Extending the sample to 24 years on a second vendor settled the "favourable regime"
-caveat that had sat in the notes for months: **0.33** for the strategy against **0.66**
-for the basket, with the strategy losing money right through 2008–2012.
+Extending the sample to 23 years on a second vendor settled the "favourable regime"
+caveat that had sat in the notes for months:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/fig-24y-growth-dark.png">
+  <img alt="Growth of one dollar from 2003 to 2026 across 13 futures markets. The naive equal-weight basket ends at 5.77 dollars with a Sharpe of 0.65; momentum long-short ends at 3.83 dollars with a Sharpe of 0.34, after losing money through 2008 to 2012." src="figures/fig-24y-growth-light.png">
+</picture>
+
+Sharpe **0.34** for the strategy against **0.65** for the basket, with the strategy
+losing money right through 2008–2012 and ending a third lower.
+
+**A correction to my own first version of this finding.** The numbers above are not the
+ones I first published. My first regression ran over the whole sample, including the 250
+days at the start in which the strategy held nothing *by construction* — it needs a year
+of history to form its first book. Its return on those days was zero while the basket
+moved, and that biased everything against the strategy: it pulled the beta down to 0.86,
+diluted the strategy's Sharpe, and credited the basket with a year the strategy was not
+allowed to trade. I reported that the basket *beat* the strategy, 1.07 to 0.76. On the
+days the strategy could actually trade, it is a tie. The conclusion — that there is no
+alpha — survived; that particular claim did not. I found it while drawing the chart
+above, when the figure disagreed with the text.
 
 The forward paper test that was supposed to be the decisive evidence had been abandoned
 after two runs. Its cron job called `python`, which did not exist in a non-interactive
@@ -140,6 +166,11 @@ The re-search produced the result I find most instructive. Ranked by the rate at
 strategy passed an evaluation, the top of the table was made of **money-losing
 strategies**:
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/fig-pass-rate-dark.png">
+  <img alt="Scatter of 36 strategy and market configurations: evaluation pass rate against Sharpe per trade. The two highest pass rates, 28 percent each, belong to a mean-reversion pullback and a range scalp that both lost money and were killed in about two-thirds of windows. The regime-switch strategy, the only one with a clearly positive Sharpe, passed 19 percent of the time and made 345 dollars." src="figures/fig-pass-rate-light.png">
+</picture>
+
 | strategy | pass rate | killed | Sharpe | PnL |
 |---|---|---|---|---|
 | mean-reversion pullback | **27.8%** | **66.7%** | −0.05 | −$2,852 |
@@ -181,6 +212,13 @@ of them was visible from inside either copy.
 **Regress on the naive benchmark first.** Not last, not as a robustness check — first.
 Everything in findings 1 through 3 would have been caught in an afternoon by asking what
 equal-weighting the universe would have done.
+
+**Compare on the window where the strategy can trade.** Any strategy that needs history
+before it can act has a warm-up period in which its return is zero by construction.
+Leave those days in and every comparison is biased against it — the benchmark gets
+credit for a period the strategy was not allowed to play. I made exactly this mistake
+in the first published version of finding 3, and it survived until a chart disagreed
+with the prose.
 
 **Name your conventions.** "Sharpe" meant three different things across this codebase, so
 figures in its own notes were not comparable with each other. Annualising a strategy that
