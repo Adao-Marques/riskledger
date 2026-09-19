@@ -1,0 +1,43 @@
+# MyFundedFutures (MFFU) — Core 50K. REAL firm, terms researched from public sources
+# (2026), editable. A real overnight-capable FUTURES firm:
+#  - EOD trailing drawdown (the floor ratchets on the CLOSE, not intraday);
+#  - overnight holding allowed Mon-Fri (auto-liquidate ~4:10pm EST, Globex reopens ~6pm),
+#    but NO weekend holds; the 2% price-limit rule blocks INDEX (ES/NQ/RTY/YM) overnight,
+#    so overnight swing here is for rates/energy/metals/ags, not the indices;
+#  - one-step evaluation, no daily-loss limit, 50% consistency on the EVAL only.
+id: mffu
+name: MyFundedFutures Core 50K
+evaluation_type: one_phase
+fee: "77"
+profit_split: "0.8"
+payout_reliability: "0.85"
+payout_per_cycle: "2000"
+days_between_payouts: 14
+funded_horizon_days: 180
+allowed_classes: [index, micro, rates, ags, energy, metals]
+phases:
+  - phase: EVAL_F1
+    objective: pass
+    rules:
+      drawdown_type: eod          # 3% EOD trailing, ratchets at the close
+      max_total_drawdown: "1500"  # 3% of 50k
+      max_daily_loss: null
+      profit_target: "3000"       # 6%
+      min_trading_days: 2
+      consistency_max_day_pct: "0.5"   # eval only
+      trailing_locks_at_initial: false
+      max_contracts: 10
+      max_eval_days: null
+      overnight_allowed: true
+      weekend_flat: true          # no weekend holds
+  - phase: FUNDED
+    objective: payout
+    rules:
+      drawdown_type: eod
+      max_total_drawdown: "1500"
+      profit_target: null
+      min_trading_days: 0
+      min_winning_days: 0
+      max_contracts: 10
+      overnight_allowed: true
+      weekend_flat: true

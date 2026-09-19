@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+.venv/
+copilot_demo.html

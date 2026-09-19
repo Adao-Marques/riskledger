@@ -1,0 +1,49 @@
+# Topstep — 50k futures evaluation (trailing/EOD drawdown), modelled as data.
+id: topstep
+name: Topstep 50K
+evaluation_type: one_phase
+fee: "165"
+profit_split: "0.9"
+payout_reliability: "0.8"
+# Funded-lifecycle terms (approximate, public ~2024-2025, editable).
+# Topstep: first payout after 5 winning days, then roughly monthly cadence.
+# 50k account daily-loss limit is ~1000; a sustainable monthly withdrawal that
+# keeps the trailing buffer intact is ~2500. Source: Topstep payout policy.
+payout_per_cycle: "2500"
+days_between_payouts: 30
+funded_horizon_days: 180
+# Topstep trades CME-group FUTURES only.
+allowed_classes: [index, micro, rates, ags, energy, metals]
+phases:
+  - phase: EVAL_F1
+    objective: pass
+    rules:
+      drawdown_type: trailing
+      max_total_drawdown: "2000"
+      max_daily_loss: "1000"
+      profit_target: "3000"
+      min_trading_days: 2
+      trailing_locks_at_initial: true
+      mandatory_flat_utc: "20:55"
+      max_contracts: 5          # Topstep 50k = 5 contracts
+      max_eval_days: null       # unlimited time to pass
+      overnight_allowed: false  # must be flat by the close
+      weekend_flat: true
+  - phase: FUNDED
+    objective: payout
+    rules:
+      # Express Funded trails END-OF-DAY (only ratchets on a new closing high),
+      # unlike the Combine which trails intraday — verified 2026. Modelling it as
+      # intraday `trailing` overstates funded kill risk.
+      drawdown_type: eod
+      max_total_drawdown: "2000"
+      max_daily_loss: "1000"
+      profit_target: null
+      min_trading_days: 0
+      trailing_locks_at_initial: true
+      mandatory_flat_utc: "20:55"
+      consistency_max_day_pct: "0.5"   # no day > 50% of total profit
+      min_winning_days: 5              # winning days required before a payout
+      max_contracts: 5
+      overnight_allowed: false
+      weekend_flat: true

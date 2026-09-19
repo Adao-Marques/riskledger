@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "riskledger"
+version = "0.1.0"
+description = "A Decimal-exact, auditable prop-firm risk kernel and an honest-measurement library for trading research."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Adão Marques" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+    "numpy",
+    "pydantic>=2",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+ml = ["scikit-learn"]
+dev = [
+    "pytest",
+    "hypothesis",
+    "mypy",
+    "ruff",
+    "types-PyYAML",
+]
+
+[tool.setuptools.packages.find]
+include = ["riskledger*"]
+
+[tool.setuptools.package-data]
+riskledger = ["py.typed"]
+"riskledger.firms" = ["configs/*.yaml"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".hypothesis"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,42 @@
+# Phidias — Swing 50K. REAL firm, terms researched from public sources (2026), editable.
+# The flagship SWING futures firm (one of the very few real futures props that truly allow
+# multi-day swing):
+#  - EOD drawdown: 3% measured at MARKET CLOSE, NO intraday drawdown limit;
+#  - overnight AND weekend holding allowed (positions can run for weeks), zero overnight fees;
+#  - NO consistency rule on the Swing/Fundamental evaluation;
+#  - one-step evaluation; split 80/20 -> 90/10 after 3 payouts (modelled at 0.85).
+id: phidias
+name: Phidias Swing 50K
+evaluation_type: one_phase
+fee: "165"
+profit_split: "0.85"
+payout_reliability: "0.85"
+payout_per_cycle: "2500"
+days_between_payouts: 14
+funded_horizon_days: 180
+allowed_classes: [index, micro, rates, ags, energy, metals]
+phases:
+  - phase: EVAL_F1
+    objective: pass
+    rules:
+      drawdown_type: eod          # 3% at market close, no intraday limit
+      max_total_drawdown: "1500"  # 3% of 50k
+      max_daily_loss: null
+      profit_target: "3000"       # 6%
+      min_trading_days: 1
+      trailing_locks_at_initial: false
+      max_contracts: 10
+      max_eval_days: null
+      overnight_allowed: true
+      weekend_flat: false         # weekend holds allowed — true swing
+  - phase: FUNDED
+    objective: payout
+    rules:
+      drawdown_type: eod
+      max_total_drawdown: "1500"
+      profit_target: null
+      min_trading_days: 0
+      min_winning_days: 0
+      max_contracts: 10
+      overnight_allowed: true
+      weekend_flat: false

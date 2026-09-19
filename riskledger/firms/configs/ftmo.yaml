@@ -1,0 +1,54 @@
+# FTMO — 100k two-phase evaluation (static drawdown), modelled as data.
+# FTMO trades forex/CFD sized by risk/lots, so there is no fixed contract cap
+# (max_contracts is left unset). Overnight holding is allowed; weekend holding
+# is not on standard accounts.
+id: ftmo
+name: FTMO 100K
+evaluation_type: two_phase
+fee: "540"
+profit_split: "0.8"
+payout_reliability: "0.9"
+# Funded-lifecycle terms (approximate, public ~2024-2025, editable).
+# FTMO: on-demand payouts with a minimum ~14-day cadence on the first cycle.
+# A plausible sustainable gross withdrawal on a 100k account (10k static
+# buffer) is ~5000 per cycle. Source: FTMO profit-payout / on-demand policy.
+payout_per_cycle: "5000"
+days_between_payouts: 14
+funded_horizon_days: 180
+# FTMO is an FX/CFD program: forex pairs, metals (XAU/XAG), index CFDs (US100/US30/
+# US500), and crypto CFDs — sized by lot. It does NOT offer rates/ags/micro FUTURES,
+# so it must never be evaluated on ZN/ZF/ZC/MES (the category error).
+allowed_classes: [forex, metals, index, crypto]
+phases:
+  - phase: EVAL_F1
+    objective: pass
+    rules:
+      drawdown_type: static
+      max_total_drawdown: "10000"
+      max_daily_loss: "5000"
+      profit_target: "10000"
+      min_trading_days: 4
+      max_eval_days: null       # FTMO removed the time limit
+      overnight_allowed: true
+      weekend_flat: true
+  - phase: EVAL_F2
+    objective: pass
+    rules:
+      drawdown_type: static
+      max_total_drawdown: "10000"
+      max_daily_loss: "5000"
+      profit_target: "5000"
+      min_trading_days: 4
+      max_eval_days: null
+      overnight_allowed: true
+      weekend_flat: true
+  - phase: FUNDED
+    objective: payout
+    rules:
+      drawdown_type: static
+      max_total_drawdown: "10000"
+      max_daily_loss: "5000"
+      profit_target: null
+      min_trading_days: 4       # first payout window
+      overnight_allowed: true
+      weekend_flat: true

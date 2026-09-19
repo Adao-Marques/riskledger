@@ -1,0 +1,42 @@
+# Apex — 50k futures evaluation (trailing drawdown), modelled as data.
+id: apex
+name: Apex 50K
+evaluation_type: one_phase
+fee: "167"
+profit_split: "0.9"
+payout_reliability: "0.7"
+# Funded-lifecycle terms (approximate, public ~2024-2025, editable).
+# Apex: first payout after ~8 trading days, then roughly biweekly/monthly.
+# We model a ~21-day cadence and a sustainable gross withdrawal of ~2000 on a
+# 50k account (2500 trailing buffer). Source: Apex payout policy.
+payout_per_cycle: "2000"
+days_between_payouts: 21
+funded_horizon_days: 180
+# Apex trades CME/CBOT/NYMEX/COMEX FUTURES only (no forex/crypto).
+allowed_classes: [index, micro, rates, ags, energy, metals]
+phases:
+  - phase: EVAL_F1
+    objective: pass
+    rules:
+      drawdown_type: trailing
+      max_total_drawdown: "2500"
+      max_daily_loss: null
+      profit_target: "3000"
+      min_trading_days: 1
+      trailing_locks_at_initial: false
+      max_contracts: 6          # Apex 50k EVAL = 6 contracts (verified 2026)
+      max_eval_days: null
+      overnight_allowed: false
+      weekend_flat: true
+  - phase: FUNDED
+    objective: payout
+    rules:
+      drawdown_type: trailing
+      max_total_drawdown: "2500"
+      profit_target: null
+      min_trading_days: 0
+      consistency_max_day_pct: "0.3"
+      min_winning_days: 0
+      max_contracts: 10
+      overnight_allowed: false
+      weekend_flat: true
